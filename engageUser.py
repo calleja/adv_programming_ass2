@@ -43,17 +43,32 @@ class Dialogue(object):
     
     
     def prepareTrade(self):
+        #make call to bittrex api to retrieve universe of currencies
             agg_dic={}            
             #dictionary of trade stats to send over to the tradeClass
-            stockTrade=input('Which stock would you like to trade?\n a - Apple / AAPL\n b - Amazon / AMZN\n c- Microsoft / MSFT\n d - Snap Chat / SNAP\n e - Intel Corp / INTC\n > ')
-            stock_dic={'a':'AAPL','b':'AMZN','c':'MSFT','d':'SNAP','e':'INTC'}
-            try:
+            g=1
+            increment=35
+            print(df_active.loc[:,['Currency','CurrencyLong']].iloc[g:g+increment])
+            g=g+increment
+            user_input=input('which ticker would you like to trade?\n> ')
+            while user_input=='n' and   g<df_active.shape[0]+(increment-2):
+                print(df_active.loc[:,['Currency','CurrencyLong']].iloc[g:g+increment])
+                g=g+increment
+                user_input=input('> ')
+                if (int(user_input) < df_active.shape[0] and int(user_input)>-1):
+                    print("ok, we're ready to trade!")
+                    print(df_active.loc[[int(user_input)]])
+                    ticker_trade=df_active['Currency'].iloc[int(user_input)]
+                    print('we have recorded ' + ticker_trade + ' in our system')
+                else:
+                    print("please type an integer or the letter 'n'")
+                try:
                 #store ticker symbol in the final dictionary
-                agg_dic['ticker']=stock_dic[stockTrade]
-            except KeyError:
-                print('incorrect selection')
+                    agg_dic['ticker']=stock_dic[stockTrade]
+                except KeyError:
+                    print('incorrect selection')
                 #start over
-                self.engageUser()
+                    self.engageUser()
             
             tradeDirection=input('Would you like to\n a- buy\n b- sell to close\n c -short\n d- buy to close?\n > ') #drives whether we calculate using bid or ask
             
