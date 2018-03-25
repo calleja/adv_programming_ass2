@@ -25,6 +25,7 @@ class EquityTrade():
     
     def qaTrade(self,result_set):
         #ensure that the trade makes sense given the current holdings in the portfolio... return a True or False... True will allow the transaction to make all the proper updates, while a False should prompt the user that the transaction is not allowed given the current holdings
+        #TODO add an entry for new cash position at the portfolio level... already referencing the cash position, so now, will append to the dictionary
         if self.tradetype=='buy':
             #cash_delta is <0 for trades to buy
             print('cash_delta of trade: '+str(result_set['cash_delta']))
@@ -46,6 +47,8 @@ class EquityTrade():
             return(result_set)
         elif self.tradetype=='buy':
             result_set=self.longTrade()
+            #from above, trade dictionaries are compiled before qa
+            #TODO the qaTrade method will now return a dictionary IF the trade is approved... this dictionary will contain an added field for cash position of the portfolio AFTER executing the trade
             if self.qaTrade(result_set):
                 return(result_set)
             else: 

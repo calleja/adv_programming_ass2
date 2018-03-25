@@ -27,13 +27,14 @@ class TradingDay(object):
         
     def makeTrade(self,rawTradeDict,act):
         #log the trade and make the trade object available for passing to the account object... Call the yahoo finance scraper. trade.EquityTrade requires fewer attributes than what is to be retrieved from the scraper and what we need to record here on the log.
-        #TODO parameter specificTradeDict contains an entry for the timestamp, but this is not persisted by the 'trade' object; this is needed for the trade log
+        
         specificTrade=trade.EquityTrade(rawTradeDict,act)
         #an instantiation of EquityTrade class... no processing done yet
         
         #TODO ensure that illegal trades are not logged... this logic is contained within tradeClass.qaTrade() function
         try:
             specificTradeResult=specificTrade.tradeType()
+            #TODO must append cash position to the trade dict... can either do here or in tradeClass... tradeClass is preferred
             formattedDic=self.prepDict(specificTradeResult,rawTradeDict)
             self.logTrade(formattedDic)
             print('your trade has been logged')
@@ -52,8 +53,7 @@ class TradingDay(object):
         return(formattedDict)
         
     def logTrade(self,tradeObject):
-        #store all the records onto a chain of dictionaries contained in a tuple that persists throughout the trading day... we need to store timestamp, money in/out (available via the "specificTrade" reference variable in "makeTrade"), qty, ticker and direction (buy/sell)
-        #append tuples with tup=tup+(newTrade,)
+        #TODO store all the trade records into a mongo db collection; each entry is first encapsulated into a dictionary. Requirements: timestamp, money in/out (in appropriate units), cash balance - AFTER the trade is execute - of the account (in base currency), qty, ticker and direction (buy/sell)
         self.tradeLogTup=(tradeObject,)+self.tradeLogTup
         #create another function to format the trade list, unless this method is light
         return

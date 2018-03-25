@@ -5,13 +5,12 @@ Client dialogue
 """
 import sys
 sys.path.append('/usr/src/app/PROJECT_FOLDER')
-sys.path.append('/home/lechuza/Documents/CUNY/data_607/assignment1/ass1_fromWork')
-sys.path.append('/home/tio/Documents/CUNY/advancedProgramming/ass1_fromWork')
+sys.path.append('/home/lechuza/Documents/CUNY/data_607/assignment2/gitCode')
 import tradeClass as trade
 import ass1_acountsClass as accts
 import datetime as datetime
 import tradeManager as tm
-import yahoo_scraper_cleaner as scraper
+from retrieveMarkets import RetrieveMarkets
 
 class Dialogue(object):
     def __init__(self):
@@ -43,9 +42,12 @@ class Dialogue(object):
     
     
     def prepareTrade(self):
-        #make call to bittrex api to retrieve universe of currencies
+        #TODO make call to bittrex api to retrieve universe of currencies
+        #aggDic will be the dictionary that stores trade details and later passes to fa
             agg_dic={}            
             #dictionary of trade stats to send over to the tradeClass
+            rm=RetrieveMarkets()
+            df_active=rm.getCurrencies()
             g=1
             increment=35
             print(df_active.loc[:,['Currency','CurrencyLong']].iloc[g:g+increment])
@@ -56,24 +58,29 @@ class Dialogue(object):
                 g=g+increment
                 user_input=input('> ')
                 if (int(user_input) < df_active.shape[0] and int(user_input)>-1):
+                    #TODO ticker now in hand... must handle
+                    trade_ticker=user_input
                     print("ok, we're ready to trade!")
                     print(df_active.loc[[int(user_input)]])
+                    # row/series in the dataframe containing the selected ticker
                     ticker_trade=df_active['Currency'].iloc[int(user_input)]
                     print('we have recorded ' + ticker_trade + ' in our system')
                 else:
                     print("please type an integer or the letter 'n'")
+                    
+                    #AFTER TICKER IS SELECTED
                 try:
-                #store ticker symbol in the final dictionary
-                    agg_dic['ticker']=stock_dic[stockTrade]
+                #beging forming the trade dictionary
+                    agg_dic['ticker']=trade_ticker
                 except KeyError:
                     print('incorrect selection')
                 #start over
                     self.engageUser()
             
-            tradeDirection=input('Would you like to\n a- buy\n b- sell to close\n c -short\n d- buy to close?\n > ') #drives whether we calculate using bid or ask
+            tradeDirection=input('Would you like to\n a- buy\n b- sell to close\n > ') #drives whether we calculate using bid or ask
             
             #a lookup dictionary
-            options={'a':'buy','b':'sell to close','c':'short','d':'buy to close'}
+            options={'a':'buy','b':'sell to close'}
             
             try:
                 #store tradetype entry in the final dictionary
@@ -82,10 +89,10 @@ class Dialogue(object):
                 print('incorrect selection')
                 self.engageUser()
                 
-            qty=float(input('How many shares would you like to trade?\n > '))
-            agg_dic['shares']=qty    
+            qty=float(input('How many coins would you like to trade?\n > '))
+            agg_dic['coins']=qty    
             agg_dic['timestamp']=datetime.datetime.now()
-            #call the yahoo scraper... then call TradeManager which calls TradeClass... actually - have the option to call the yahoo scraper from the TradeManager object.
+            #TODO call the retrieveMarkets class... then call TradeManager which calls TradeClass... actually - have the option to call the yahoo scraper from the TradeManager object.
             s=scraper.Scrapy()
             price_dict=s.rtYhoDats(stock_dic[stockTrade])
             
