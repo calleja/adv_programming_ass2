@@ -29,9 +29,9 @@ class RetrieveMarkets():
 
         r=requests.get(url,params=payload)
         df=pd.DataFrame(r.json()['result'])
-        df_active=df[df.IsActive == True]
+        self.df_active=df[df.IsActive == True]
     #display this dataframe to the user
-        return(df_active.loc[:,['Currency','CurrencyLong']])
+        return(self.df_active.loc[:,['Currency','CurrencyLong']])
 
 
     def getCurrentPrice(self,ticker):
@@ -46,10 +46,12 @@ class RetrieveMarkets():
         return(what)
         
         
-    def get100Day(self,ticker):
+    def get100Day(self,ticker_index):
         ''' Acquire historical prices from CRYPTOCOMPARE '''
         url='https://min-api.cryptocompare.com/data/histoday'
-
+        #will return a str
+        ticker=self.df_active.loc[ticker_index,'Currency']
+#prices from last 120 days
         parameters= {'fsym':ticker, 'tsym': self.base_currency, 'e': 'Bittrex', 'aggregate':1,'limit':120}
         
         r=requests.get(url,parameters)
@@ -61,18 +63,19 @@ class RetrieveMarkets():
         raw_time=j_obj['Data']
         df=pd.DataFrame.from_dict(raw_time)
         df['time']=df['time'].apply(lambda x: datetime.datetime.fromtimestamp(x))
-        self.draw100day(df)
+        self.draw100day(df,ticker)
     
     
-    def draw100day(self,df):
+    def draw100day(self,df,ticker):
         df['ma_20']=df['close'].rolling(20).mean()
         
         plt.subplot(1,1,1)
         plt.xticks(rotation=45)
-        plt.plot(df['time'],df['close'],color='red',marker='o')
+        #plt.plot(df['time'],df['close'],color='red',marker='o')
         plt.plot(df['time'],df['close'],color='green',linestyle='-')
         plt.plot(df['time'],df['ma_20'],color='cyan',linestyle='-')
 #plt.title(str(self.market)+' pair') 
-        plt.title(str(self.market)+' pair')
+        plt.title('100 day and 20 day MA: '+str(self.base_currency)+'-'+ticker+' pair')
         plt.show()
         plt.close()
+        return()

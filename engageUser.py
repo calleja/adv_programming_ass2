@@ -40,43 +40,66 @@ class Dialogue(object):
             print('please select an option')
             self.engageUser()
     
+    def iterateDF(self,df,index_start):
+        #begin iteration from the index passed in the argument call
+        g=index_start
+        increment=35
+        print(df.loc[:,['Currency','CurrencyLong']].iloc[g:g+increment])
+        g=g+increment
+        user_input=input('which ticker would you like to trade? Please type the index number corresponding with the ticker.\n> ')
+        if user_input=='n':
+            while user_input=='n' and   g<df.shape[0]+(increment-2):
+                print(df.loc[:,['Currency','CurrencyLong']].iloc[g:g+increment])
+                g=g+increment
+                user_input=input('> ')
+            #TODO user_input ne 'n' breaks the loop, must then evaluate the user input
+            #TODO do I need to return the series, or ticker, or nothing?
+        return(user_input,g)
     
+    def qaAndSelect(self,shapes,userInput):
+        #evaluate user input
+        try:
+            lookup_index=int(userInput)
+            if (lookup_index < shapes and int(lookup_index)>-1):
+                return(True)
+            else:
+                return(False)
+        except ValueError:
+            #user did not enter an appropriate value
+            print("please type an integer or the letter 'n'")
+            return(False)
+            
     def prepareTrade(self):
-        #TODO make call to bittrex api to retrieve universe of currencies
         #aggDic will be the dictionary that stores trade details and later passes to fa
             agg_dic={}            
             #dictionary of trade stats to send over to the tradeClass
             rm=RetrieveMarkets()
             df_active=rm.getCurrencies()
-            g=1
-            increment=35
-            print(df_active.loc[:,['Currency','CurrencyLong']].iloc[g:g+increment])
-            g=g+increment
-            user_input=input('which ticker would you like to trade?\n> ')
-            while user_input=='n' and   g<df_active.shape[0]+(increment-2):
-                print(df_active.loc[:,['Currency','CurrencyLong']].iloc[g:g+increment])
-                g=g+increment
-                user_input=input('> ')
-                if (int(user_input) < df_active.shape[0] and int(user_input)>-1):
+            g=False
+            iterate_index=1
+            while g==False:
+                user_input,iterate_index=self.iterateDF(df_active,iterate_index)
+                g=self.qaAndSelect(df_active.shape[0],user_input)
                     #TODO ticker now in hand... must handle
-                    trade_ticker=user_input
-                    print("ok, we're ready to trade!")
-                    print(df_active.loc[[int(user_input)]])
-                    # row/series in the dataframe containing the selected ticker
-                    ticker_trade=df_active['Currency'].iloc[int(user_input)]
-                    print('we have recorded ' + ticker_trade + ' in our system')
-                else:
-                    print("please type an integer or the letter 'n'")
+            print("ok, we're ready to trade!")
+                    #TODO render 100-day chart
+            rm.get100Day(int(user_input))
+                    
+                #print(df_active.loc[[lookup_index]])
+                    # TODO redundant: I index for the ticker via the index passed by the user... row/series in the dataframe containing the selected ticker
+                    
+'''                           
                     
                     #AFTER TICKER IS SELECTED
                 try:
-                #beging forming the trade dictionary
+                #TODO need to update this process, as the explicit ticker is not stored in the engageUser object
+                #begin forming the trade dictionary
                     agg_dic['ticker']=trade_ticker
                 except KeyError:
                     print('incorrect selection')
                 #start over
                     self.engageUser()
-            
+     
             tradeDirection=input('Would you like to\n a- buy\n b- sell to close\n > ') #drives whether we calculate using bid or ask
             
             #a lookup dictionary
@@ -134,3 +157,4 @@ class Dialogue(object):
         sorted_list=self.todayTrading.sortTrades()
         return(print(self.act.calcUPL(ahora,sorted_list)))
             
+'''

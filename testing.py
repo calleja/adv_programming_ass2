@@ -13,15 +13,17 @@ import retrieveMarkets as rm
 import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
-imp.reload(rm)
+import engageUser as eu
+imp.reload(eu)
 
 retm=rm.RetrieveMarkets()
 test=retm.getCurrencies()
-test1=retm.get100Day('ETH')
+df=retm.df_active
+type(df.loc[35,'Currency'])
 
-d=test1['Data']
-d[0:7]
-retm.getCurrentPrice('BTC')
+diag=eu.Dialogue()
+diag.engageUser()
+
 
 h=datetime.datetime.now() - datetime.timedelta(days=120)
 
