@@ -9,6 +9,7 @@ Created on Wed Mar 21 16:03:30 2018
 import sys
 import imp
 sys.path.append('/home/lechuza/Documents/CUNY/data_607/assignment2/gitCode')
+sys.path.append('/home/tio/Documents/CUNY/advancedProgramming/ass2/adv_programming_ass2')
 import retrieveMarkets as rm
 import datetime
 import pandas as pd
@@ -17,6 +18,7 @@ import engageUser as eu
 imp.reload(eu)
 
 retm=rm.RetrieveMarkets()
+retm.getCurrentPrice('ETH')
 test=retm.getCurrencies()
 df=retm.df_active
 type(df.loc[35,'Currency'])

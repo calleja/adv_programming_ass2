@@ -41,7 +41,7 @@ class RetrieveMarkets():
         payload2={'apikey':self.api_key,
 'apisecret':self.api_secret,'nonce':datetime.datetime.now(),'market':self.market}
         r=requests.get(url_current,params=payload2)
-        #returns the ask, bid, last trades in a dict container
+        #returns the ask, bid, last trades in a dict/json document
         what=r.json()['result']
         return(what)
         
@@ -64,6 +64,9 @@ class RetrieveMarkets():
         df=pd.DataFrame.from_dict(raw_time)
         df['time']=df['time'].apply(lambda x: datetime.datetime.fromtimestamp(x))
         self.draw100day(df,ticker)
+        #log the ticker elsewhere
+        print('get100Day from retrieveMarkets is sending ticker: '+ticker)
+        return(ticker)
     
     
     def draw100day(self,df,ticker):
