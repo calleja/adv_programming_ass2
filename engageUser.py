@@ -104,10 +104,7 @@ class Dialogue(object):
                 self.engageUser()
             
             #The user is then asked to confirm the trade at the market ask price scraped from Yahoo.
-            cont=input('You can transact at {}. Would you like to continue y/n?\n > '.format(agg_dic['price']))
-            
-            
-            '''
+            cont=input('You can transact at {} {}. Would you like to continue y/n?\n > '.format(agg_dic['price'],self.rm.base_currency))
             
             if cont=='y':
                 #send over this data to the tradeClass or can return a dictionary
@@ -115,9 +112,19 @@ class Dialogue(object):
                 agg_dic['coins']=qty    
                 agg_dic['timestamp']=datetime.datetime.now()
                 print('Your trade is being processed')
-                print(agg_dic)
-            
+                #TODO record trade details and verify validity... recall that it's the tradeManager that will store/send the trades to the mongoDB
+                try:
+                    single_trade_dic=self.todayTrading.makeTrade(agg_dic,self.act)
+                    self.act.postEquityTrade(single_trade_dic)
+                    self.engageUser() 
+            #engage user again                    
+                except ValueError:
+                    print('try a valid trade')
+                    self.engageUser()
+            else:
                 self.engageUser()
+            
+        
             
                 #acount object has now been updated at the highest scope
                 #trade.EquityTrade(agg_dic,self.act)
@@ -125,20 +132,15 @@ class Dialogue(object):
                 
                 #TODO discover the error below, an invalid trade is being sent to act.CheckIfNew, but should die at the tradeClass... ensure that the call to makeTrade() encounters the invalid trade error... enforce that the thrown error reaches this object
                 
-                try:
-                    single_trade_dic=self.todayTrading.makeTrade(agg_dic,self.act)
+                
                     #makeTrade() calls tradeClass.tradeType() which QAs the trade, determines the original tradetype (long/short) and calculates the delta on position size and imapct to cash
                     print(single_trade_dic) #TODO printing None
                 
                 #TODO this is the portion that is explicitly throwing the error... error states that single_trade_dic is empty
-                    self.act.postEquityTrade(single_trade_dic)
+                    
                 #keep the session going until the user quits
                     self.engageUser()
-                except ValueError:
-                    print('try a valid trade')
-                    self.engageUser()
-            else:
-                self.engageUser()
+                
                 
                 '''
     def selectExecPrice(self,letter,ticker):
