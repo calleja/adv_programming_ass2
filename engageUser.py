@@ -46,7 +46,7 @@ class Dialogue(object):
         increment=35
         print(df.loc[:,['Currency','CurrencyLong']].iloc[g:g+increment])
         g=g+increment
-        user_input=input('which ticker would you like to trade? Please type the index number corresponding with the ticker.\n> ')
+        user_input=input('which coin would you like to trade? Please type the index number corresponding with the coin symbol.\n> ')
         if user_input=='n':
             while user_input=='n' and   g<df.shape[0]+(increment-2):
                 print(df.loc[:,['Currency','CurrencyLong']].iloc[g:g+increment])
@@ -108,20 +108,25 @@ class Dialogue(object):
             
             if cont=='y':
                 #send over this data to the tradeClass or can return a dictionary
-                qty=float(input('How many coins would you like to trade?\n > '))
+                qty=float(input('How many target coins would you like to trade into?\n > '))
                 agg_dic['coins']=qty    
                 agg_dic['timestamp']=datetime.datetime.now()
                 print('Your trade is being processed')
                 #TODO record trade details and verify validity (by interacting with the account class)... recall that it's the tradeManager that will store/send the trades to the mongoDB
                 try:
+                    #makeTrade now also posts the trade to the accounts object
                     single_trade_dic=self.todayTrading.makeTrade(agg_dic,self.act)
-                    self.act.postEquityTrade(single_trade_dic)
+                    print(single_trade_dic)
+                    #direct interface with accounts class
+                    #self.act.postEquityTrade(single_trade_dic)
+                    print('post trade positions:')
+                    self.act.positions
                     self.engageUser() 
             #engage user again                    
                 except ValueError:
                     print('try a valid trade')
                     self.engageUser()
-            else:
+            else: #if user selects anything other than 'yes'
                 self.engageUser()
             
         
@@ -134,15 +139,14 @@ class Dialogue(object):
                 
                 
                     #makeTrade() calls tradeClass.tradeType() which QAs the trade, determines the original tradetype (long/short) and calculates the delta on position size and imapct to cash
-                    print(single_trade_dic) #TODO printing None
+                     #TODO printing None
                 
                 #TODO this is the portion that is explicitly throwing the error... error states that single_trade_dic is empty
                     
                 #keep the session going until the user quits
-                    self.engageUser()
                 
                 
-                '''
+                
     def selectExecPrice(self,letter,ticker):
         #handle the user trade request and lookup the proper price
         print('ticker as recognized by selectExecPrice in eu: '+ticker)
@@ -163,10 +167,12 @@ class Dialogue(object):
             raise ValueError
             
             
+            '''
+            
     def calcPL(self):
         #call scraper, pass dictionary of current prices to the account object and print the current status of the portfolio dictionary, equipped with both realized and unrealized p+l
         s=scraper.Scrapy()
         ahora=s.rtYhoDats()
         sorted_list=self.todayTrading.sortTrades()
         return(print(self.act.calcUPL(ahora,sorted_list)))
-            
+            '''

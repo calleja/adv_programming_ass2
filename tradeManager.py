@@ -16,8 +16,7 @@ P/L:
 import sys
 import pandas as pd
 sys.path.append('/usr/src/app/PROJECT_FOLDER')
-sys.path.append('/home/lechuza/Documents/CUNY/data_607/assignment1/ass1_fromWork')
-sys.path.append('/home/tio/Documents/CUNY/advancedProgramming/ass1_fromWork')
+sys.path.append('/home/tio/Documents/CUNY/advancedProgramming/ass2/adv_programming_ass2')
 import tradeClass as trade
 
 class TradingDay(object):
@@ -27,14 +26,19 @@ class TradingDay(object):
         
     def makeTrade(self,rawTradeDict,act):
         #TODO validate the trade, attach a "post-trade cash balance" element and record in the mongoDB db      
+        #tradeClass does not interact with the account class
         specificTrade=trade.EquityTrade(rawTradeDict,act)
         #an instantiation of EquityTrade class... no processing done yet
         
         #TODO ensure that illegal trades are not logged... this logic is contained within tradeClass.qaTrade() function
         try:
             specificTradeResult=specificTrade.tradeType()
+            #we post the trade to the account class from here
+            act.postEquityTrade(specificTradeResult)
+            #retrieve the coin_bal post trade
+            coin_bal=act.coin_bal
             #TODO must append cash position to the trade dict... can either do here or in tradeClass... tradeClass is preferred
-            formattedDic=self.prepDict(specificTradeResult,rawTradeDict)
+            formattedDic=self.prepDict(specificTradeResult,rawTradeDict,coin_bal)
             self.logTrade(formattedDic)
             print('your trade has been logged')
             return(specificTradeResult)
@@ -46,9 +50,9 @@ class TradingDay(object):
         #TODO ensure that illegal trades are not logged... this logic is contained within tradeClass.qaTrade() function... this function does not and should not handle errant trades... need to ensure that the application breaks and that prepDic() is not called
         
         
-    def prepDict(self,tradeClassDict,rawDict):        
+    def prepDict(self,tradeClassDict,rawDict,coin_bal):        
         #take elements from both dictionaries and create a third one for logging... this will need to formatted before displaying to users
-        formattedDict={'side':rawDict['tradetype'],'ticker':rawDict['ticker'],'quantity':rawDict['shares'],'executed price':rawDict['price'],'execution timesestamp':rawDict['timestamp'],'money in/out':tradeClassDict['cash_delta'],'original_tradetype':tradeClassDict['original_tradetype'],'position_delta':tradeClassDict['position_delta']}
+        formattedDict={'side':rawDict['tradetype'],'ticker':rawDict['ticker'],'quantity':rawDict['coins'],'executed price':rawDict['price'],'execution timesestamp':rawDict['timestamp'],'money in/out':tradeClassDict['cash_delta'],'original_tradetype':tradeClassDict['original_tradetype'],'position_delta':tradeClassDict['position_delta'],'new_cash_bal':coin_bal}
         return(formattedDict)
         
     def logTrade(self,tradeObject):

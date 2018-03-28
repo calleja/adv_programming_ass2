@@ -21,7 +21,7 @@ class Account:
                         'SNAP':{'shares':0,'vwap':0,'realized_pl':0,'notional':0,'original_direction':'','upl':0},
                         'AMZN':{'shares':0,'vwap':0,'realized_pl':0,'notional':0,'original_direction':'','upl':0}}
         '''
-        self.position={}
+        self.positions={}
         
         
     def getCash(self):
@@ -38,8 +38,11 @@ class Account:
             if self.positions[dic['ticker']]['original_direction']==dic['original_tradetype']:
                 return False
         else:
+            print('entering this new position into the accounts dictionary - from the ass1_accountsClass')
             #create an entry/holding in the portfolio for that stock at 0 notional and shares
             self.positions[dic['ticker']]={'coins':0,'notional':0,'original_direction':'','realized_pl':0}
+            print('trade attributes stored:\n')
+            print(self.positions[dic['ticker']].keys())
             return True
         
         

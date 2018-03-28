@@ -6,8 +6,7 @@ This class QAs the trade, makes calculations based on tradetype... trades are to
 import sys
 #these paths will later need to be edited and matched with the imported/downloaded git folder
 sys.path.append('/usr/src/app/PROJECT_FOLDER')
-sys.path.append('/home/lechuza/Documents/CUNY/data_607/assignment1/ass1_fromWork')
-sys.path.append('/home/tio/Documents/CUNY/advancedProgramming/ass1_fromWork')
+sys.path.append('/home/tio/Documents/CUNY/advancedProgramming/ass2/adv_programming_ass2')
 #import ass1_acountsClass as acct
 
 class EquityTrade():
@@ -16,7 +15,7 @@ class EquityTrade():
         #trade_dic is the dictionary/json object scraped from yahoo
         self.ticker=trade_dic['ticker']
         self.price=trade_dic['price']
-        self.shares=trade_dic['coins']
+        self.coins=trade_dic['coins']
         self.timestamp=trade_dic['timestamp']
         self.tradetype=trade_dic['tradetype'] #buy, sell, short
         #self.original_trade_type=trade_dic['original_tradetype']
@@ -29,14 +28,14 @@ class EquityTrade():
         if self.tradetype=='buy':
             #cash_delta is <0 for trades to buy
             print('cash_delta of trade: '+str(result_set['cash_delta']))
-            print('portfolio cash position: '+str(self.currentPortfolio.cash_bal))
-            if result_set['cash_delta']+self.currentPortfolio.cash_bal<0:
+            print('portfolio cash position: '+str(self.currentPortfolio.coin_bal))
+            if result_set['cash_delta']+self.currentPortfolio.coin_bal<0:
                 return False
             else:
                 return True
-        if self.tradetype=='sell to close' or self.tradetype=='buy to close': #TODO short shares may be stored as a negative holding, so need to watch it here
+        if self.tradetype=='sell to close' or self.tradetype=='buy to close': #TODO short coins may be stored as a negative holding, so need to watch it here
             try:  #return the evaluation of the conditional statement below
-                return abs(self.currentPortfolio.positions[self.ticker]['shares'])>=abs(self.shares)
+                return abs(self.currentPortfolio.positions[self.ticker]['coins'])>=abs(self.coins)
             except KeyError:
                 return False
                 
@@ -75,37 +74,37 @@ class EquityTrade():
         
     
     def shortTrade(self):
-        #no drawdown of cash, update portfolio w/negative shares
-        notional_delta=self.shares*self.price
-        position_delta=self.shares*-1
+        #no drawdown of cash, update portfolio w/negative coins
+        notional_delta=self.coins*self.price
+        position_delta=self.coins*-1
         cash_delta=0
         
         result_set={'notional_delta':notional_delta,'cash_delta':cash_delta,'position_delta':position_delta,'ticker':self.ticker,'original_tradetype':'short'}
         return(result_set)
         
     def buyToClose(self):
-        #no drawdown of cash, update portfolio w/negative shares
-        notional_delta=-1*self.shares*self.price
-        position_delta=self.shares*-1
+        #no drawdown of cash, update portfolio w/negative coins
+        notional_delta=-1*self.coins*self.price
+        position_delta=self.coins*-1
         cash_delta=notional_delta
         
         result_set={'notional_delta':notional_delta,'cash_delta':cash_delta,'position_delta':position_delta,'ticker':self.ticker,'original_tradetype':'short'}
         return(result_set)
         
     def longTrade(self):
-        #cash drawdown, increase number of shares, increase in notional...
-        notional_delta=self.shares*self.price
+        #cash drawdown, increase number of coins, increase in notional...
+        notional_delta=self.coins*self.price
         cash_delta=notional_delta*-1 #cash debit
-        position_delta=self.shares
+        position_delta=self.coins
         
         result_set={'notional_delta':notional_delta,'cash_delta':cash_delta,'position_delta':position_delta,'ticker':self.ticker,'original_tradetype':'long'}
         return(result_set)
         
     def sellToClose(self):
-        #decrease #of shares held, increase cash, record realized g/l... realized g/l could be outsourced to a g/l calculator
-        notional_delta=-1*self.shares*self.price
-        position_delta=self.shares*-1
-        cash_delta=self.shares*self.price #cash increase
+        #decrease #of coins held, increase cash, record realized g/l... realized g/l could be outsourced to a g/l calculator
+        notional_delta=-1*self.coins*self.price
+        position_delta=self.coins*-1
+        cash_delta=self.coins*self.price #cash increase
         
         result_set={'notional_delta':notional_delta,'cash_delta':cash_delta,'position_delta':position_delta,'ticker':self.ticker,'original_tradetype':'long'}
         return(result_set)

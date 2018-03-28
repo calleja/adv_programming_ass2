@@ -15,6 +15,7 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 import engageUser as eu
+import ass1_acountsClass as accts
 imp.reload(eu)
 
 retm=rm.RetrieveMarkets()
@@ -25,28 +26,16 @@ type(df.loc[35,'Currency'])
 
 diag=eu.Dialogue()
 diag.engageUser()
+#TODO check the trade log to ensure that all the trade data looks appropriate, then build the interace with the db
 
+#calculate and add the cash balance after trade. The prospective classes to do so:
+#trade transaction dictionary is complete... we log the trade by a function in the tradeManager class: logTrade()
 
-h=datetime.datetime.now() - datetime.timedelta(days=120)
+''' testing the accounts class '''
+act=accts.Account()
 
-type(h)
+test_trade_dict={'notional_delta': 5.6895, 'cash_delta': -5.6895, 'position_delta': 100.0, 'ticker': 'ETH', 'original_tradetype': 'long'}
 
-df=pd.DataFrame.from_dict(d)
+act.postEquityTrade(test_trade_dict)
 
-r=df['close'].rolling(window=20).mean()
-df['ma_20']=r
-df.dtypes
-df['time'].head()
-
-df['time']=df['time'].apply(lambda x: datetime.datetime.fromtimestamp(x))
-
-
-
-plt.subplot(1,1,1)
-plt.xticks(rotation=45)
-plt.plot(df['time'],df['close'],color='red',marker='o')
-plt.plot(df['time'],df['close'],color='green',linestyle='-')
-plt.plot(df['time'],df['ma_20'],color='cyan',linestyle='-')
-#plt.title(str(self.market)+' pair')
-plt.show()
-plt.close()
+''' end testing the accounts class '''
