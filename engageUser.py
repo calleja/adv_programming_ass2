@@ -112,7 +112,7 @@ class Dialogue(object):
                 agg_dic['coins']=qty    
                 agg_dic['timestamp']=datetime.datetime.now()
                 print('Your trade is being processed')
-                #TODO record trade details and verify validity... recall that it's the tradeManager that will store/send the trades to the mongoDB
+                #TODO record trade details and verify validity (by interacting with the account class)... recall that it's the tradeManager that will store/send the trades to the mongoDB
                 try:
                     single_trade_dic=self.todayTrading.makeTrade(agg_dic,self.act)
                     self.act.postEquityTrade(single_trade_dic)

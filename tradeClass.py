@@ -16,7 +16,7 @@ class EquityTrade():
         #trade_dic is the dictionary/json object scraped from yahoo
         self.ticker=trade_dic['ticker']
         self.price=trade_dic['price']
-        self.shares=trade_dic['shares']
+        self.shares=trade_dic['coins']
         self.timestamp=trade_dic['timestamp']
         self.tradetype=trade_dic['tradetype'] #buy, sell, short
         #self.original_trade_type=trade_dic['original_tradetype']

@@ -26,8 +26,7 @@ class TradingDay(object):
         self.tradeLogTup=()
         
     def makeTrade(self,rawTradeDict,act):
-        #log the trade and make the trade object available for passing to the account object... Call the yahoo finance scraper. trade.EquityTrade requires fewer attributes than what is to be retrieved from the scraper and what we need to record here on the log.
-        
+        #TODO validate the trade, attach a "post-trade cash balance" element and record in the mongoDB db      
         specificTrade=trade.EquityTrade(rawTradeDict,act)
         #an instantiation of EquityTrade class... no processing done yet
         
