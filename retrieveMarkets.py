@@ -34,16 +34,27 @@ class RetrieveMarkets():
         return(self.df_active.loc[:,['Currency','CurrencyLong']])
 
 
-    def getCurrentPrice(self,ticker):
+    def getCurrentPrice(self,ticker_list):
+        #consumed by engageUser in the selectExecPrice() which itself is called by eu.prepareTrade()
         url_current='https://bittrex.com/api/v1.1/public/getticker'
 #must be a BTC based cross market
-        self.market=self.base_currency+'-'+ticker
-        payload2={'apikey':self.api_key,
+        #a list of nested dictionaries
+        dict_list=[]
+        for single_tick in ticker_list:
+            self.market=self.base_currency+'-'+single_tick
+            payload2={'apikey':self.api_key,
 'apisecret':self.api_secret,'nonce':datetime.datetime.now(),'market':self.market}
-        r=requests.get(url_current,params=payload2)
-        #returns the ask, bid, last trades in a dict/json document
-        what=r.json()['result']
-        return(what)
+            r=requests.get(url_current,params=payload2) 
+            price_dict=r.json()['result']
+            #add the ticker associated w/prices to dict... AS ITS KEY... dict_list will be a list of nested dictionaries
+            #TODO have the option of making this a dictionary of dictionaries instead of a list of dictionaries, which is more difficult to index
+            dict_list.append({single_tick:price_dict})
+            
+            
+        #returns the ask, bid, last trades in a dict/json document... this will be refactored to return a list of dictionaries
+        
+            
+        return(dict_list)
         
         
     def get100Day(self,ticker_index):

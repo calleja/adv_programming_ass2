@@ -103,11 +103,13 @@ this function will then instantiate a tradeClass object that will QA the trade (
     def calcUPL(self,dictOfPrices,sortedList):
         #dictOfPrices = output from scrape class; format: {ticker as str:price as float}
         #calc = portfolio for >0 holdings: current market price*shares held - VWAP*shares held  
+        #called from 
         total_notional=0
         
+        #iterate through the positions dictionary
         for k,v in self.positions.items():
-            #retrieve price
-            self.positions[k]['upl']=dictOfPrices[k]*v['coins']-v['vwap']*v['coins']
+            #TODO retrieve price... current version won't work: dictOfPrices is a list of dictionaries, not a straight dictionary
+            self.positions[k]['upl']=dictOfPrices[k]['Bid']*v['coins']-v['vwap']*v['coins']
             g=dictOfPrices[k]*v['coins']
             self.positions[k]['notional']=g
             total_notional+=g 
