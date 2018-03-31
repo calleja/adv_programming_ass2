@@ -34,6 +34,8 @@ class TradingDay(object):
         try:
             specificTradeResult=specificTrade.tradeType()
             #we post the trade to the account class from here
+            print('sending the following to the accounts class:')
+            print(specificTradeResult)
             act.postEquityTrade(specificTradeResult)
             #retrieve the coin_bal post trade
             coin_bal=act.coin_bal
@@ -60,6 +62,7 @@ class TradingDay(object):
         self.tradeLogTup=(tradeObject,)+self.tradeLogTup
         #create another function to format the trade list, unless this method is light
         return
+    
     def profitCalc(self):
         #handle the p+l
         return

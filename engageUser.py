@@ -116,11 +116,11 @@ class Dialogue(object):
                 try:
                     #makeTrade now also posts the trade to the accounts object
                     single_trade_dic=self.todayTrading.makeTrade(agg_dic,self.act)
-                    print(single_trade_dic)
+                    #print(single_trade_dic)
                     #direct interface with accounts class
                     #self.act.postEquityTrade(single_trade_dic)
                     print('post trade positions:')
-                    self.act.positions
+                    print(self.act.positions)
                     self.engageUser() 
             #engage user again                    
                 except ValueError:

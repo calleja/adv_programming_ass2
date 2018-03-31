@@ -42,7 +42,7 @@ class Account:
             #create an entry/holding in the portfolio for that stock at 0 notional and shares
             self.positions[dic['ticker']]={'coins':0,'notional':0,'original_direction':'','realized_pl':0}
             print('trade attributes stored:\n')
-            print(self.positions[dic['ticker']].keys())
+            print(self.positions[dic['ticker']])
             return True
         
         
@@ -79,6 +79,8 @@ this function will then instantiate a tradeClass object that will QA the trade (
         else:
             self.positions[dic['ticker']]['original_direction']=dic['original_tradetype']
         #updat self.positions[ticker]['realized_pl'] with another application
+        print('portfolio after the conclusion of postEquityTrade in the accounts class')
+        print(self.positions)
 
     def calcVWAP(self,dic):
         #reconcile the new transaction to the previous portfolio stats... only applicable to position increasing transactions (buys for long positions and sales for shorts)
