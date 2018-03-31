@@ -15,3 +15,5 @@ ensure that trade execution is not negatively effected by making a trade
 
 account positions:
 {'QWARK': {'coins': 200000.0, 'notional': 2.028, 'original_direction': 'long', 'realized_pl': 0, 'vwap': 1.014e-05}, 'LTC': {'coins': 400.0, 'notional': 6.804, 'original_direction': 'long', 'realized_pl': 0, 'vwap': 0.01701}}
+
+Test realized p/l

@@ -102,31 +102,41 @@ this function will then instantiate a tradeClass object that will QA the trade (
             #'notional_delta' is negative for sales
             self.positions[dic['ticker']]['realized_pl']=-dic['notional_delta']+self.positions[dic['ticker']]['vwap']*dic['position_delta']+self.positions[dic['ticker']]['realized_pl']
             
-    def calcUPL(self,dictOfPrices,sortedList):
+    def calcUPL(self,dictOfPrices):
         #dictOfPrices = output from scrape class; format: {ticker as str:price as float}
         #calc = portfolio for >0 holdings: current market price*shares held - VWAP*shares held  
-        #called from 
+        #original version of this function sorts the p/l table by trade date... a sorted list of trade tickers was the second parameter of this function... this has been removed
         total_notional=0
         
         #iterate through the positions dictionary
         for k,v in self.positions.items():
             #TODO retrieve price... current version won't work: dictOfPrices is a list of dictionaries, not a straight dictionary
             self.positions[k]['upl']=dictOfPrices[k]['Bid']*v['coins']-v['vwap']*v['coins']
-            g=dictOfPrices[k]*v['coins']
+            g=dictOfPrices[k]['Bid']*v['coins']
             self.positions[k]['notional']=g
             total_notional+=g 
+            #new spec for ass2: sum the UPL and RPL for each position
+            self.positions[k]['total p/l']=self.positions[k]['upl']+self.positions[k]['realized_pl']
+            #TODO call a separate function that calculates the total # of shares and calculates the proportion of each component holding... better served if this is done AFTER the positions dict is converted to a pd.DataFrame
          
          #calculate the total size of portfolio: cash + notional
         self.portfolio_value=self.coin_bal+total_notional
         cash_line=('cash',self.coin_bal,self.portfolio_value)
-        sorted_df=self.sortPositions(sortedList) 
-        print(sorted_df)
+        #sorted_df=self.sortPositions(sortedList) - removed
+        print(self.positions)
         #TODO cash_line will need to conform to the table structure: with index "cash" and blank values for WAP, UPL and RPL... ensure that RPL persists after the position in the stock was liquidated
         print(cash_line)
+        
+        return
     
     def sortPositions(self,sortedList):
         df=pd.DataFrame.from_dict(self.positions,orient='index')
         #sort the dataframe by its index
         return(df.reindex(sortedList))
-        
-        
+    
+    def convert2Df(self):
+        df=pd.DataFrame.from_dict(self.act.positions,orient='index')        
+        #calculate the total no. of shares then apply a function to 
+        #TODO be sure to add a cash row!!!!
+        df['proportion_shares']=df.apply(lambda x: x['coins']/  sum(df['coins']),axis=1)
+        df['proportion_notional']=df.apply(lambda x: x['notional']/sum(df['notional']),axis=1)

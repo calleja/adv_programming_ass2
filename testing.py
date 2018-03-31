@@ -32,14 +32,21 @@ diag.engageUser()
 
 ''' testing the accounts class '''
 act=accts.Account()
-act.positions={'QWARK': {'coins': 200000.0, 'notional': 2.028, 'original_direction': 'long', 'realized_pl': 0, 'vwap': 1.014e-05}, 'LTC': {'coins': 400.0, 'notional': 6.804, 'original_direction': 'long', 'realized_pl': 0, 'vwap': 0.01701}}
+act.positions={'QWARK': {'coins': 200000.0, 'notional': 2.028, 'original_direction': 'long', 'realized_pl': 0, 'vwap': 1.014e-05}, 'LTC': {'coins': 40000.0, 'notional': 6.804, 'original_direction': 'long', 'realized_pl': 0, 'vwap': 0.01701}}
 act.getPortfolio()
 
 test_trade_dict={'notional_delta': 5.6895, 'cash_delta': -5.6895, 'position_delta': 100.0, 'ticker': 'ETH', 'original_tradetype': 'long'}
 
 ''' end testing the accounts class '''
 
+''' convert the portfolio dictionary into a pd.DataFrame '''
+df=pd.DataFrame.from_dict(act.positions,orient='index')
+df['proportion_shares']=df.apply(lambda x: x['coins']/sum(df['coins']),axis=1)
+df['proportion_notional']=df.apply(lambda x: x['notional']/sum(df['notional']),axis=1)
+
+
 ''' test retrieve markets and calculate p/l '''
 ticker_array=act.positions.keys()
 retm=rm.RetrieveMarkets()
 prices_dict=retm.getCurrentPrice(ticker_array)
+'''
