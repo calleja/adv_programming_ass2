@@ -155,7 +155,7 @@ class Dialogue(object):
             
         try:
                 #TODO call the retrieveMarkets class... then call TradeManager which calls TradeClass... getCurrentPrice() now requires a list of tickers - one is fine
-            current_price_dict=self.rm.getCurrentPrice([ticker])[]
+            current_price_dict=self.rm.getCurrentPrice([ticker])[ticker]
             
             #select the appropriate price according to the trade type: buy on ask and sell on the bid
             map_bid_ask={'a':'Ask','b':'Bid'}
@@ -172,7 +172,8 @@ class Dialogue(object):
         #ideally, get all the tickers from the accounts class, then pass an array to retrieveMarkets class
         #this should be coin tickers
         ticker_array=self.act.positions.keys()
+        #verified this works independent of the program
         prices_dict=self.rm.getCurrentPrice(ticker_array)
-        #TODO does the sort function properly?
+        #TODO sortedTrades relies on the old tuple format and not the new mongoDB... sortTrades() returns a 
         sorted_list=self.todayTrading.sortTrades()
         return(print(self.act.calcUPL(prices_dict,sorted_list)))

@@ -7,9 +7,11 @@ amended accounts.calcUPL()
 realized/unrealized profit and loss is a combination of eu.calcPL(), tradeManager.sortTrades()
 
 test the p/l functions:
-rm.getCurrentPrice() must return a list of nested dictionaries where the key is the ticker... the values contains bid, ask, last
-eu.selectExecPrice calls rm.getCurrentPrice(), but this requires a portfolio of trades in the ass1_accountsClass
+eu calculates pl via eu.calcPL(), which retrieves prices for all coins in the portfolio via retrieveMarkets - rm.getCurrentPrice(), but this requires a portfolio of trades in the ass1_accountsClass
 
-eu.calcPL() requires an account object
+#sortList from the tradeManager needs to be revamped to work with the mongoDB... engageUser calls todayTrading.sortTrades() before sending prices over to the accounts object to calculate realized/unrealized p&l... can bypass this feature for now and continue to QA the p&l calculations and add some of the new features
 
 ensure that trade execution is not negatively effected by making a trade
+
+account positions:
+{'QWARK': {'coins': 200000.0, 'notional': 2.028, 'original_direction': 'long', 'realized_pl': 0, 'vwap': 1.014e-05}, 'LTC': {'coins': 400.0, 'notional': 6.804, 'original_direction': 'long', 'realized_pl': 0, 'vwap': 0.01701}}

@@ -10,12 +10,12 @@ import sys
 import imp
 sys.path.append('/home/lechuza/Documents/CUNY/data_607/assignment2/gitCode')
 sys.path.append('/home/tio/Documents/CUNY/advancedProgramming/ass2/adv_programming_ass2')
-#import retrieveMarkets as rm
+import retrieveMarkets as rm
 import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 import engageUser as eu
-#import ass1_acountsClass as accts
+import ass1_acountsClass as accts
 imp.reload(eu)
 
 retm=rm.RetrieveMarkets()
@@ -28,14 +28,18 @@ diag=eu.Dialogue()
 diag.engageUser()
 #TODO check the trade log to ensure that all the trade data looks appropriate, then build the interace with the db
 
-#calculate and add the cash balance after trade. The prospective classes to do so:
-#trade transaction dictionary is complete... we log the trade by a function in the tradeManager class: logTrade()
+#test the p&l calculations... create a portfolio of accounts
 
 ''' testing the accounts class '''
 act=accts.Account()
+act.positions={'QWARK': {'coins': 200000.0, 'notional': 2.028, 'original_direction': 'long', 'realized_pl': 0, 'vwap': 1.014e-05}, 'LTC': {'coins': 400.0, 'notional': 6.804, 'original_direction': 'long', 'realized_pl': 0, 'vwap': 0.01701}}
+act.getPortfolio()
 
 test_trade_dict={'notional_delta': 5.6895, 'cash_delta': -5.6895, 'position_delta': 100.0, 'ticker': 'ETH', 'original_tradetype': 'long'}
 
-act.postEquityTrade(test_trade_dict)
-
 ''' end testing the accounts class '''
+
+''' test retrieve markets and calculate p/l '''
+ticker_array=act.positions.keys()
+retm=rm.RetrieveMarkets()
+prices_dict=retm.getCurrentPrice(ticker_array)
