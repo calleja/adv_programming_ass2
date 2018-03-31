@@ -154,8 +154,8 @@ class Dialogue(object):
         options={'a':'buy','b':'sell to close'}
             
         try:
-                #TODO call the retrieveMarkets class... then call TradeManager which calls TradeClass... actually - have the option to call the yahoo scraper from the TradeManager object.
-            current_price_dict=self.rm.getCurrentPrice(ticker)
+                #TODO call the retrieveMarkets class... then call TradeManager which calls TradeClass... getCurrentPrice() now requires a list of tickers - one is fine
+            current_price_dict=self.rm.getCurrentPrice([ticker])[]
             
             #select the appropriate price according to the trade type: buy on ask and sell on the bid
             map_bid_ask={'a':'Ask','b':'Bid'}
@@ -167,12 +167,12 @@ class Dialogue(object):
             raise ValueError
             
             
-            '''
-            
     def calcPL(self):
         #call scraper, pass dictionary of current prices to the account object and print the current status of the portfolio dictionary, equipped with both realized and unrealized p+l
-        s=scraper.Scrapy()
-        ahora=s.rtYhoDats()
+        #ideally, get all the tickers from the accounts class, then pass an array to retrieveMarkets class
+        #this should be coin tickers
+        ticker_array=self.act.positions.keys()
+        prices_dict=self.rm.getCurrentPrice(ticker_array)
+        #TODO does the sort function properly?
         sorted_list=self.todayTrading.sortTrades()
-        return(print(self.act.calcUPL(ahora,sorted_list)))
-            '''
+        return(print(self.act.calcUPL(prices_dict,sorted_list)))

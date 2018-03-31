@@ -10,12 +10,12 @@ import sys
 import imp
 sys.path.append('/home/lechuza/Documents/CUNY/data_607/assignment2/gitCode')
 sys.path.append('/home/tio/Documents/CUNY/advancedProgramming/ass2/adv_programming_ass2')
-import retrieveMarkets as rm
+#import retrieveMarkets as rm
 import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 import engageUser as eu
-import ass1_acountsClass as accts
+#import ass1_acountsClass as accts
 imp.reload(eu)
 
 retm=rm.RetrieveMarkets()
