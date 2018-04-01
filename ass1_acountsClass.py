@@ -121,22 +121,25 @@ this function will then instantiate a tradeClass object that will QA the trade (
          
          #calculate the total size of portfolio: cash + notional
         self.portfolio_value=self.coin_bal+total_notional
-        cash_line=('cash',self.coin_bal,self.portfolio_value)
+        cash_line={'cash':{'coins':self.coin_bal,'notional':self.portfolio_value}}
         #sorted_df=self.sortPositions(sortedList) - removed
-        print(self.positions)
         #TODO cash_line will need to conform to the table structure: with index "cash" and blank values for WAP, UPL and RPL... ensure that RPL persists after the position in the stock was liquidated
         print(cash_line)
         
-        return
+        return(self.convert2Df(cash_line))
     
     def sortPositions(self,sortedList):
         df=pd.DataFrame.from_dict(self.positions,orient='index')
         #sort the dataframe by its index
         return(df.reindex(sortedList))
     
-    def convert2Df(self):
-        df=pd.DataFrame.from_dict(self.act.positions,orient='index')        
+    def convert2Df(self,cash_line):
+        self.df=pd.DataFrame.from_dict(self.positions,orient='index')        
         #calculate the total no. of shares then apply a function to 
         #TODO be sure to add a cash row!!!!
-        df['proportion_shares']=df.apply(lambda x: x['coins']/  sum(df['coins']),axis=1)
-        df['proportion_notional']=df.apply(lambda x: x['notional']/sum(df['notional']),axis=1)
+        self.df['proportion_shares']=self.df.apply(lambda x: x['coins']/  sum(self.df['coins']),axis=1)
+        self.df['proportion_notional']=self.df.apply(lambda x: x['notional']/sum(self.df['notional']),axis=1)
+        cash_line['cash'].update({'original_direction':'','realized_pl':'','vwap':0,'total p/l':None,'proportion_shares':None,'proportion_notional':None})
+        cash_df=pd.DataFrame.from_dict(cash_line,orient='index')
+        return(pd.concat([self.df,cash_df],axis=1))
+        

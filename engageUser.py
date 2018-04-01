@@ -175,8 +175,8 @@ class Dialogue(object):
         #verified this works independent of the program
         prices_dict=self.rm.getCurrentPrice(ticker_array)
         print('the prices dictionary retrieved from the retrieve markets class and accessed in eu is provided for QA')
-        print(prices_dict)
+        #print(prices_dict)
         #TODO sortedTrades relies on the old tuple format and not the new mongoDB... sortTrades() returns a 
         #sorted_list=self.todayTrading.sortTrades() - removed
-        self.act.calcUPL(prices_dict)
+        print(self.act.calcUPL(prices_dict))
         return

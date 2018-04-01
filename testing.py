@@ -37,12 +37,19 @@ act.getPortfolio()
 
 test_trade_dict={'notional_delta': 5.6895, 'cash_delta': -5.6895, 'position_delta': 100.0, 'ticker': 'ETH', 'original_tradetype': 'long'}
 
+cash={'cash':{'coins':0,'notional':0,'original_direction':'','realized_pl':0,'vwap':0,'total p/l':None,'proportion_shares':None,'proportion_notional':None}}
+test_df=pd.DataFrame.from_dict(cash,orient='index')
+test_df.columns
+df.columns
+pd.concat([df,test_df],axis=1)
+
 ''' end testing the accounts class '''
 
 ''' convert the portfolio dictionary into a pd.DataFrame '''
 df=pd.DataFrame.from_dict(act.positions,orient='index')
 df['proportion_shares']=df.apply(lambda x: x['coins']/sum(df['coins']),axis=1)
 df['proportion_notional']=df.apply(lambda x: x['notional']/sum(df['notional']),axis=1)
+dic={'original_direction':'','realized_pl':'','vwap':0,'total p/l':None,'proportion_shares':None,'proportion_notional':None}
 
 
 ''' test retrieve markets and calculate p/l '''
