@@ -16,7 +16,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import engageUser as eu
 import ass1_acountsClass as accts
-imp.reload(eu)
+import mongoDB_interface as mongo
+imp.reload(mongo)
 
 retm=rm.RetrieveMarkets()
 retm.getCurrentPrice('ETH')
@@ -56,4 +57,45 @@ dic={'original_direction':'','realized_pl':'','vwap':0,'total p/l':None,'proport
 ticker_array=act.positions.keys()
 retm=rm.RetrieveMarkets()
 prices_dict=retm.getCurrentPrice(ticker_array)
-'''
+''' end retrieve markets '''
+
+''' test the mongo injection '''
+trade1={'side':'long',
+'ticker':'OMG',
+'quantity':38566,
+'executed price':0.026733,
+'execution timesestamp':datetime.datetime.now(),
+'money in/out':233.543,
+'original_tradetype':'long',
+'position_delta':299000,
+'new_cash_bal':778999}
+
+
+trade2={'side':'long',
+'ticker':'RPL',
+'quantity':34566,
+'executed price':.006733,
+'execution timesestamp':datetime.datetime.now(),
+'money in/out':23.543,
+'original_tradetype':'long',
+'position_delta':20000,
+'new_cash_bal':678999}
+
+trade3={'side':'sell to close',
+'ticker':'KWK',
+'quantity':40000,
+'executed price':.000453,
+'execution timesestamp':datetime.datetime.now(),
+'money in/out':120.1433,
+'original_tradetype':'long',
+'position_delta':-40000,
+'new_cash_bal':453768}
+
+m=mongo.MongoInterface()
+m.clearCollection()
+m.tradeInjection(trade1)
+m.tradeInjection(trade2)
+m.tradeInjection(trade3)
+df=m.retrieveTrades()
+m.retrieveAll()
+
