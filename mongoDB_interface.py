@@ -32,7 +32,8 @@ class MongoInterface(object):
         return
     
     def retrieveTrades(self):
-        rs=self.trades.find().sort({'execution timestamp':-1})
+        rs=self.trades.find().sort('execution timestamp',pymongo.DESCENDING)
+        #.sort('field', pymongo.ASCENDING)
         #works in robo3t: db.trade_collection.find().sort({'execution timestamp':-1})
         return(pd.DataFrame(list(rs)))
     

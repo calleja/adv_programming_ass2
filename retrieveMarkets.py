@@ -6,7 +6,6 @@ Will need to retrieve universe of available currencies from bittrex and place in
 import pandas as pd
 import requests
 import datetime
-import hmac
 import hashlib
 import time #to convert UNIX timestamp
 import matplotlib.pyplot as plt

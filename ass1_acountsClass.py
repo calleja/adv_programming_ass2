@@ -102,7 +102,7 @@ this function will then instantiate a tradeClass object that will QA the trade (
             #'notional_delta' is negative for sales
             self.positions[dic['ticker']]['realized_pl']=-dic['notional_delta']+self.positions[dic['ticker']]['vwap']*dic['position_delta']+self.positions[dic['ticker']]['realized_pl']
             
-    def calcUPL(self,dictOfPrices):
+    def calcUPL(self,dictOfPrices,sorted_list):
         #dictOfPrices = output from scrape class; format: {ticker as str:price as float}
         #calc = portfolio for >0 holdings: current market price*shares held - VWAP*shares held  
         #original version of this function sorts the p/l table by trade date... a sorted list of trade tickers was the second parameter of this function... this has been removed
@@ -122,19 +122,17 @@ this function will then instantiate a tradeClass object that will QA the trade (
          #calculate the total size of portfolio: cash + notional
         self.portfolio_value=self.coin_bal+total_notional
         cash_line={'cash':{'coins':self.coin_bal,'notional':self.portfolio_value}}
-        #sorted_df=self.sortPositions(sortedList) - removed
         #TODO cash_line will need to conform to the table structure: with index "cash" and blank values for WAP, UPL and RPL... ensure that RPL persists after the position in the stock was liquidated
         print(cash_line)
         
+        #convert portfolio to pd.DataFrame and append the calculated cash_line
         return(self.convert2Df(cash_line))
     
-    def sortPositions(self,sortedList):
-        df=pd.DataFrame.from_dict(self.positions,orient='index')
-        #sort the dataframe by its index
-        return(df.reindex(sortedList))
     
-    def convert2Df(self,cash_line):
-        self.df=pd.DataFrame.from_dict(self.positions,orient='index')        
+    def convert2Df(self,cash_line,sort_list):
+        #index of the df should be the coin symbols
+        self.df=pd.DataFrame.from_dict(self.positions,orient='index')   
+        self.df.sort_index(level=sort_list,inplace=True)
         #calculate the total no. of shares then apply a function to 
         #TODO be sure to add a cash row!!!!
         self.df['proportion_shares']=self.df.apply(lambda x: x['coins']/  sum(self.df['coins']),axis=1)

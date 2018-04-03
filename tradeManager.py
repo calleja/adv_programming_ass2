@@ -18,11 +18,13 @@ import pandas as pd
 sys.path.append('/usr/src/app/PROJECT_FOLDER')
 sys.path.append('/home/tio/Documents/CUNY/advancedProgramming/ass2/adv_programming_ass2')
 import tradeClass as trade
+import mongoDB_interface as mongo
 
 class TradingDay(object):
     
     def __init__(self):
         self.tradeLogTup=()
+        self.mongo_connection=mongo.MongoInterface()
         
     def makeTrade(self,rawTradeDict,act):
         #TODO validate the trade, attach a "post-trade cash balance" element and record in the mongoDB db      
@@ -41,9 +43,10 @@ class TradingDay(object):
             coin_bal=act.coin_bal
             #TODO must append cash position to the trade dict... can either do here or in tradeClass... tradeClass is preferred
             formattedDic=self.prepDict(specificTradeResult,rawTradeDict,coin_bal)
-            self.logTrade(formattedDic)
+            #self.logTrade(formattedDic) - legacy
+            self.mongo_connection.tradeInjection(formattedDic)
             print('your trade has been logged')
-            return(specificTradeResult)
+            
         except ValueError:
             #TODO ensure this breaks out of the function
             print('trade was not executed')
@@ -57,18 +60,10 @@ class TradingDay(object):
         formattedDict={'side':rawDict['tradetype'],'ticker':rawDict['ticker'],'quantity':rawDict['coins'],'executed price':rawDict['price'],'execution timesestamp':rawDict['timestamp'],'money in/out':tradeClassDict['cash_delta'],'original_tradetype':tradeClassDict['original_tradetype'],'position_delta':tradeClassDict['position_delta'],'new_cash_bal':coin_bal}
         return(formattedDict)
         
-    def logTrade(self,tradeObject):
-        #TODO store all the trade records into a mongo db collection; each entry is first encapsulated into a dictionary. Requirements: timestamp, money in/out (in appropriate units), cash balance - AFTER the trade is execute - of the account (in base currency), qty, ticker and direction (buy/sell)
-        self.tradeLogTup=(tradeObject,)+self.tradeLogTup
-        #create another function to format the trade list, unless this method is light
-        return
     
-    def profitCalc(self):
-        #handle the p+l
-        return
     
     def prettyPrintTradeLog(self):
-        return print(pd.DataFrame(list(self.tradeLogTup)))
+        return(self.mongo_connection.retrieveTrades())
     
     def sortTrades(self):
         #place tickers of trades in a pandas df of ticker and timestamp; groupBy ticker and select for the latest timestamp, then sort by timestamp

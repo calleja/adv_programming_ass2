@@ -177,6 +177,6 @@ class Dialogue(object):
         print('the prices dictionary retrieved from the retrieve markets class and accessed in eu is provided for QA')
         #print(prices_dict)
         #TODO sortedTrades relies on the old tuple format and not the new mongoDB... sortTrades() returns a 
-        #sorted_list=self.todayTrading.sortTrades() - removed
+        #TODO call the tradeManager class to retrieve the trade blotter and return a unique list of tickers in order of trade activity
         print(self.act.calcUPL(prices_dict))
         return
