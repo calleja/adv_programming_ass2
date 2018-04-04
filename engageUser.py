@@ -83,7 +83,9 @@ class Dialogue(object):
                     #TODO ticker now in hand... must handle
             #render 100-day chart and return the ticker
             ticker=self.rm.get100Day(int(user_input))
-                    
+            #assume that user_input is a string
+            result_dic=self.rm.get24Hr([ticker])
+            print(result_dic[ticker])
                     
                     #AFTER TICKER IS SELECTED
             try:

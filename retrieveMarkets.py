@@ -55,7 +55,24 @@ class RetrieveMarkets():
             
         return(all_prices_dict)
         
-        
+    def get24Hr(self, ticker_list):
+        url_24_hr='https://min-api.cryptocompare.com/data/histohour?'
+        self.stats_dic={}
+    
+        for single_tick in ticker_list:
+            #look up the ticker from the index number
+            #instantiate the dicitonary
+            self.stats_dic[single_tick]={}
+            payload2={'apikey':self.api_key,
+'apisecret':self.api_secret,'nonce':datetime.datetime.now(),'fsym':single_tick,'tsym':'BTC','limit':24}
+            r=requests.get(url_24_hr,params=payload2) 
+            df=pd.DataFrame.from_dict(r.json()['Data'])
+            df_mat=df.as_matrix()
+            self.stats_dic[single_tick]['max']=np.amax(df_mat[:,1])
+            self.stats_dic[single_tick]['min']=np.amin(df_mat[:,1])
+            self.stats_dic[single_tick]['avg']=np.average(df_mat[:,1])
+        return(self.stats_dic)
+    
     def get100Day(self,ticker_index):
         ''' Acquire historical prices from CRYPTOCOMPARE '''
         url='https://min-api.cryptocompare.com/data/histoday'
@@ -73,6 +90,7 @@ class RetrieveMarkets():
         raw_time=j_obj['Data']
         df=pd.DataFrame.from_dict(raw_time)
         df['time']=df['time'].apply(lambda x: datetime.datetime.fromtimestamp(x))
+        #print the price chart
         self.draw100day(df,ticker)
         #log the ticker elsewhere
         print('get100Day from retrieveMarkets is sending ticker: '+ticker)
@@ -80,10 +98,13 @@ class RetrieveMarkets():
     
     
     def draw100day(self,df,ticker):
+        #calculate the date 100 days ago
+        day_100=datetime.datetime.now() - datetime.timedelta(days=100)
         df['ma_20']=df['close'].rolling(20).mean()
         
         plt.subplot(1,1,1)
         plt.xticks(rotation=45)
+        plt.xlim(day_100,datetime.datetime.now())
         #plt.plot(df['time'],df['close'],color='red',marker='o')
         plt.plot(df['time'],df['close'],color='green',linestyle='-')
         plt.plot(df['time'],df['ma_20'],color='cyan',linestyle='-')

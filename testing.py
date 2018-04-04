@@ -13,11 +13,13 @@ sys.path.append('/home/tio/Documents/CUNY/advancedProgramming/ass2/adv_programmi
 import retrieveMarkets as rm
 import datetime
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import engageUser as eu
 import ass1_acountsClass as accts
 import mongoDB_interface as mongo
-imp.reload(mongo)
+import requests
+imp.reload(eu)
 
 retm=rm.RetrieveMarkets()
 retm.getCurrentPrice('ETH')
@@ -54,10 +56,62 @@ dic={'original_direction':'','realized_pl':'','vwap':0,'total p/l':None,'proport
 
 
 ''' test retrieve markets and calculate p/l '''
+datetime.datetime.now() - datetime.timedelta(days=100)
+
 ticker_array=act.positions.keys()
 retm=rm.RetrieveMarkets()
 prices_dict=retm.getCurrentPrice(ticker_array)
 ''' end retrieve markets '''
+
+''' test retrieve markets and the 24 hour price executions '''
+
+url_24_hr='https://min-api.cryptocompare.com/data/histohour?'
+        
+api_key='c8f16ead26d4438e991c318c8fd76629'
+api_secret='bb885473805547f1834cfc5057a78901'        
+market='BTC'+'-'+'ETH'
+payload2={'apikey':api_key,
+'apisecret':api_secret,'nonce':datetime.datetime.now(),'market':market,'limit':24}
+
+payload2={'apikey':api_key,
+'apisecret':api_secret,'nonce':datetime.datetime.now(),'fsym':'BTC','tsym':'ETH','limit':24}
+
+
+r=requests.get(url_24_hr,params=payload2) 
+r.json().keys()
+r.json()['Data'][5].keys()
+df=pd.DataFrame.from_dict(r.json()['Data'])
+['high']            
+mat=df['high'].as_matrix()
+df.columns
+df_mat=df.as_matrix()
+np.amax(df_mat[:,1])
+np.amin(df_mat[:,1])
+np.average(df_mat[:,1])
+np.std(mat)
+
+get24Hr(['ETH'])
+
+def get24Hr(ticker_list):
+    url_24_hr='https://min-api.cryptocompare.com/data/histohour?'
+    stats_dic={}
+    api_key='c8f16ead26d4438e991c318c8fd76629'
+    api_secret='bb885473805547f1834cfc5057a78901'        
+    for single_tick in ticker_list:
+            #look up the ticker from the index number
+            #instantiate the dicitonary
+        stats_dic[single_tick]={}
+        payload2={'apikey':api_key,
+'apisecret':api_secret,'nonce':datetime.datetime.now(),'fsym':single_tick,'tsym':'BTC','limit':24}
+        r=requests.get(url_24_hr,params=payload2) 
+        df=pd.DataFrame.from_dict(r.json()['Data'])
+        df_mat=df.as_matrix()
+        stats_dic[single_tick]['max']=np.amax(df_mat[:,1])
+        stats_dic[single_tick]['min']=np.amin(df_mat[:,1])
+        stats_dic[single_tick]['avg']=np.average(df_mat[:,1])
+    return(stats_dic)
+
+''' end testing retrieveMarkets '''            
 
 ''' test the mongo injection '''
 trade1={'side':'long',
