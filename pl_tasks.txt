@@ -20,3 +20,7 @@ Test realized p/l
 
 computing volatility:
 https://www.cryptocompare.com/api/#-api-data-histominute-
+
+remaining from 4/6:
+check the set() in the eu.calcUPL() - attempting to ensure that ordering of tickers is preserved
+mongo.retrieveTrades() does not appear to be printing in descending order of trades

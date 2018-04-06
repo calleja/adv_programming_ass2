@@ -180,5 +180,7 @@ class Dialogue(object):
         #print(prices_dict)
         #TODO sortedTrades relies on the old tuple format and not the new mongoDB... sortTrades() returns a 
         #TODO call the tradeManager class to retrieve the trade blotter and return a unique list of tickers in order of trade activity
+        #TODO ensure that set() accepts a pd.Series... has the benefit of storing only unique values... even then, need to ensure that the latest entry of a given ticker is preserved.
+        set(self.todayTrading.prettyPrintTradeLog()['ticker'])
         print(self.act.calcUPL(prices_dict))
         return

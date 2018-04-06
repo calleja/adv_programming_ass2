@@ -63,6 +63,7 @@ class TradingDay(object):
     
     
     def prettyPrintTradeLog(self):
+        #this mongo function returns a pd.DataFrame
         return(self.mongo_connection.retrieveTrades())
     
     def sortTrades(self):
