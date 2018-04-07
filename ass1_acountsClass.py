@@ -126,7 +126,7 @@ this function will then instantiate a tradeClass object that will QA the trade (
         print(cash_line)
         
         #convert portfolio to pd.DataFrame and append the calculated cash_line
-        return(self.convert2Df(cash_line))
+        return(self.convert2Df(cash_line,sorted_list))
     
     
     def convert2Df(self,cash_line,sort_list):

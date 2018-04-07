@@ -153,3 +153,13 @@ m.tradeInjection(trade3)
 df=m.retrieveTrades()
 m.retrieveAll()
 
+df=pd.DataFrame([trade1,trade2,trade3])
+df.head()
+ser=pd.Series(np.arange(8))
+aset=set(df['ticker'])
+df.dtypes
+df=df.set_index('ticker')
+df.sort_index(level=aset,inplace=True)
+df.index.values
+aset=set(['RPL','KWK','OMG'])
+aset

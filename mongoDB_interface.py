@@ -36,7 +36,11 @@ class MongoInterface(object):
         rs=self.trades.find().sort('execution timestamp',pymongo.DESCENDING)
         #.sort('field', pymongo.ASCENDING)
         #works in robo3t: db.trade_collection.find().sort({'execution timestamp':-1})
-        return(pd.DataFrame(list(rs)))
+        df=pd.DataFrame(list(rs))
+        print('these are the available columns in the df')
+        print(df.dtypes)
+        df.sort_values(by=['execution timestamp'], ascending=False,inplace=True)
+        return(df)
     
     def clearCollection(self):
         self.trades.remove()
