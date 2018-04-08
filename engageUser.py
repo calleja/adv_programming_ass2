@@ -125,7 +125,8 @@ class Dialogue(object):
                     print(self.act.positions)
                     self.engageUser() 
             #engage user again                    
-                except ValueError:
+            #TODO replace KeyError with ValueError
+                except KeyError:
                     print('try a valid trade')
                     self.engageUser()
             else: #if user selects anything other than 'yes'
@@ -151,7 +152,7 @@ class Dialogue(object):
                 
     def selectExecPrice(self,letter,ticker):
         #handle the user trade request and lookup the proper price
-        print('ticker as recognized by selectExecPrice in eu: '+ticker)
+        #print('ticker as recognized by selectExecPrice in eu: '+ticker)
         #a lookup dictionary
         options={'a':'buy','b':'sell to close'}
             
@@ -173,14 +174,26 @@ class Dialogue(object):
         #call scraper, pass dictionary of current prices to the account object and print the current status of the portfolio dictionary, equipped with both realized and unrealized p+l
         #ideally, get all the tickers from the accounts class, then pass an array to retrieveMarkets class
         #this should be coin tickers
+        #print('acquiring keys from the accounts portfolio df')
+        #print(self.act.positions.keys())
+        #keys function returns a list
         ticker_array=self.act.positions.keys()
+        if len(ticker_array)>0:
+            
         #verified this works independent of the program
-        prices_dict=self.rm.getCurrentPrice(ticker_array)
-        print('the prices dictionary retrieved from the retrieve markets class and accessed in eu is provided for QA')
-        #print(prices_dict)
+            prices_dict=self.rm.getCurrentPrice(ticker_array)
+        
+        
         #TODO sortedTrades relies on the old tuple format and not the new mongoDB... sortTrades() returns a 
         #TODO call the tradeManager class to retrieve the trade blotter and return a unique list of tickers in order of trade activity
         #TODO ensure that set() accepts a pd.Series... has the benefit of storing only unique values... even then, need to ensure that the latest entry of a given ticker is preserved.
-        sorted_list=self.todayTrading.prettyPrintTradeLog()['ticker'].sort_values('ticker')['ticker'].unique()
-        print(self.act.calcUPL(prices_dict,sorted_list))
+            #print('acquiring ordered portfolio')
+            sorted_list=self.todayTrading.prettyPrintTradeLog().sort_values(['ticker'])['ticker'].unique()
+            #print('sorted potfolio is {}'.format(sorted_list))
+            #print('moving on the last step: act.calcUPL - called from eu.calcPL')
+        
+        #TODO undo print(self.act.calcUPL(prices_dict,sorted_list))
+            print(self.act.calcUPL(prices_dict,sorted_list))
+        else:
+            print('Your cash balance is {}'.format(self.act.coin_bal))
         return

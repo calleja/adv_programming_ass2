@@ -9,7 +9,6 @@ Created on Wed Mar 28 19:47:44 2018
 import pymongo
 import pandas as pd
 import numpy as np
-import datetime
 from time import sleep
 
 class MongoInterface(object):
@@ -37,9 +36,8 @@ class MongoInterface(object):
         #.sort('field', pymongo.ASCENDING)
         #works in robo3t: db.trade_collection.find().sort({'execution timestamp':-1})
         df=pd.DataFrame(list(rs))
-        print('these are the available columns in the df')
-        print(df.dtypes)
         df.sort_values(by=['execution timestamp'], ascending=False,inplace=True)
+        #print('trade blotter as retrieved from mongo {}'.format(df[['ticker','execution timestamp']]))
         return(df)
     
     def clearCollection(self):

@@ -6,8 +6,6 @@ Will need to retrieve universe of available currencies from bittrex and place in
 import pandas as pd
 import requests
 import datetime
-import hashlib
-import time #to convert UNIX timestamp
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -41,12 +39,14 @@ class RetrieveMarkets():
         all_prices_dict={}
         for single_tick in ticker_list:
             self.market=self.base_currency+'-'+single_tick
+            #print('sending the trading pair {} to bittrex'.format(self.market))
             payload2={'apikey':self.api_key,
 'apisecret':self.api_secret,'nonce':datetime.datetime.now(),'market':self.market}
             r=requests.get(url_current,params=payload2) 
             price_dict=r.json()['result']
             #add the ticker associated w/prices to dict... AS ITS KEY... dict_list will be a list of nested dictionaries
             #TODO have the option of making this a dictionary of dictionaries instead of a list of dictionaries, which is more difficult to index
+            #print('response from bittrex {}'.format(price_dict))
             all_prices_dict[single_tick]=price_dict
             
             
@@ -110,6 +110,6 @@ class RetrieveMarkets():
         plt.plot(df['time'],df['ma_20'],color='cyan',linestyle='-')
 #plt.title(str(self.market)+' pair') 
         plt.title('100 day and 20 day MA: '+str(self.base_currency)+'-'+ticker+' pair')
-        plt.show()
+        plt.show(block=True)
         plt.close()
         return()

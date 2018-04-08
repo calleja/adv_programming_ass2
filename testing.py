@@ -155,11 +155,39 @@ m.retrieveAll()
 
 df=pd.DataFrame([trade1,trade2,trade3])
 df.head()
-ser=pd.Series(np.arange(8))
-aset=set(df['ticker'])
 df.dtypes
 df=df.set_index('ticker')
-df.sort_index(level=aset,inplace=True)
-df.index.values
-aset=set(['RPL','KWK','OMG'])
-aset
+
+
+df.sort_values(by=['execution timestamp'], ascending=False,inplace=True)
+df.columns
+
+''' rebuild the dataframes: trade and cash for future merging
+self.portfolio_value=self.coin_bal+total_notional
+
+self.positions[k]['upl']=dictOfPrices[k]['Bid']*v['coins']-v['vwap']*v['coins']
+g=dictOfPrices[k]['Bid']*v['coins']
+self.positions[k]['notional']=g
+total_notional+=g 
+#new spec for ass2: sum the UPL and RPL for each position
+self.positions[k]['total p/l']=self.positions[k]['upl']+self.positions[k]['realized_pl']
+self.df=pd.DataFrame.from_dict(self.positions,orient='index')   
+self.df.sort_index(level=sort_list,inplace=True)
+#calculate the total no. of shares then apply a function to 
+#TODO be sure to add a cash row!!!!
+self.df['proportion_shares']=self.df.apply(lambda x: x['coins']/  sum(self.df['coins']),axis=1)
+self.df['proportion_notional']=self.df.apply(lambda x: x['notional']/sum(self.df['notional']),axis=1)
+
+#compile the cash dataframe
+cash_line={'cash':{'coins':self.coin_bal,'notional':self.portfolio_value}}
+cash_line['cash'].update({'original_direction':'','realized_pl':'','vwap':0,'total p/l':None,'proportion_shares':None,'proportion_notional':None})
+cash_df=pd.DataFrame.from_dict(cash_line,orient='index')
+'''
+
+fd=pd.DataFrame.from_dict({'BLITZ':{'coins':90000, 'notional':7000000, 'original_direction': 'long',  'realized_pl':0,      'vwap':67777,       'upl': -600,  'total p/l':900},
+                  'EXP':{'coins':800000,'notional':690000, 'original_direction': 'long',  'realized_pl':0,      'vwap':67777,       'upl': -600,  'total p/l':900}},orient='index')
+
+fd.index.values
+fd.loc[['EXP','BLITZ'],:]
+
+df1=fd.sort_index(level=['BLITZ','EXP'],inplace=False)

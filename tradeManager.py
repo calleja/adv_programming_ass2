@@ -36,8 +36,8 @@ class TradingDay(object):
         try:
             specificTradeResult=specificTrade.tradeType()
             #we post the trade to the account class from here
-            print('sending the following to the accounts class:')
-            print(specificTradeResult)
+            #print('sending the following to the accounts class:')
+            #print(specificTradeResult)
             act.postEquityTrade(specificTradeResult)
             #retrieve the coin_bal post trade
             coin_bal=act.coin_bal
@@ -57,7 +57,7 @@ class TradingDay(object):
         
     def prepDict(self,tradeClassDict,rawDict,coin_bal):        
         #take elements from both dictionaries and create a third one for logging... this will need to formatted before displaying to users
-        formattedDict={'side':rawDict['tradetype'],'ticker':rawDict['ticker'],'quantity':rawDict['coins'],'executed price':rawDict['price'],'execution timesestamp':rawDict['timestamp'],'money in/out':tradeClassDict['cash_delta'],'original_tradetype':tradeClassDict['original_tradetype'],'position_delta':tradeClassDict['position_delta'],'new_cash_bal':coin_bal}
+        formattedDict={'side':rawDict['tradetype'],'ticker':rawDict['ticker'],'quantity':rawDict['coins'],'executed price':rawDict['price'],'execution timestamp':rawDict['timestamp'],'money in/out':tradeClassDict['cash_delta'],'original_tradetype':tradeClassDict['original_tradetype'],'position_delta':tradeClassDict['position_delta'],'new_cash_bal':coin_bal}
         return(formattedDict)
         
     

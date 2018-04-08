@@ -29,11 +29,11 @@ class EquityTrade():
             #cash_delta is <0 for trades to buy
             print('cash_delta of trade: '+str(result_set['cash_delta']))
             print('portfolio cash position: '+str(self.currentPortfolio.coin_bal))
-            if result_set['cash_delta']+self.currentPortfolio.coin_bal<0:
+            if result_set['cash_delta']+self.currentPortfolio.coin_bal<0 or self.coins<0:
                 return False
             else:
                 return True
-        if self.tradetype=='sell to close' or self.tradetype=='buy to close': #TODO short coins may be stored as a negative holding, so need to watch it here
+        if self.tradetype=='sell to close' or self.tradetype=='buy to close': #TODO need to catch attempted sales for greater than current holding... the below inequality test should catch attempted bad sales
             try:  #return the evaluation of the conditional statement below
                 return abs(self.currentPortfolio.positions[self.ticker]['coins'])>=abs(self.coins)
             except KeyError:
